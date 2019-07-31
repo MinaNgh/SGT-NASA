@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="./style.css">	
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<meta charset="UTF-8">
 	<title>Document</title>
 	
@@ -13,7 +13,7 @@
   <div class="container">
 	<div class="flexItem" id="div1">
 	  <label for="male">Telemetry points</label>
-      <select name="telemetryPt" onchange="render(this.value)">  
+      <select name="telemetryPt" id="telemetryPt" onchange="render(this.value)">  
         <option value="v">Voltage</option>
         <option value="c">current</option>
       </select>	  
@@ -25,8 +25,8 @@
                 <th>
                     ID
                 </th>
-                <th onclick="sortTable()">
-                    Timestamp
+                <th id="timestamp" onclick="render(document.getElementById('telemetryPt').value)" class="desc">
+                    Timestamp <i class="fa fa-sort-desc"></i>
                 </th>
                 <th>
                     Value

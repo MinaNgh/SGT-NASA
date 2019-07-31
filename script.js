@@ -1,8 +1,13 @@
 //$(document).ready(function() {
 //    $('#table').DataTable();
 //} );
+let  sortOrder;
+let result;
 const elements = {
-  table: document.querySelector('#TelemetryTable')
+  table: document.querySelector('#TelemetryTable'),
+  timestamp : document.getElementById('timestamp'), 
+  icon : document.querySelector('.fa'),
+
 }
 async function getTelemetry(pointId){
   
@@ -81,7 +86,12 @@ function unSubscribe(pointId){
 function render(pointId){
   elements.table.innerHTML = "";
   getTelemetry(pointId).then(data =>{
- 
+//      console.log(data.sort((a,b)=>a.timestamp-b.timestamp));
+//    data = data.sort((a,b)=>b.timestamp-a.timestamp); 
+      data = sortTable(data);
+      result = data;
+//    data = data.sort((a,b)=>a.timestamp-b.timestamp);
+    
       const tableRow = data.map(telemetry=> {
          const newArray = `<tr>
               <td>
@@ -94,6 +104,7 @@ function render(pointId){
                   ${telemetry.value}
               </td>
             </tr>`;
+         
           elements.table.insertAdjacentHTML('beforeend',newArray);
         }
         
@@ -101,19 +112,20 @@ function render(pointId){
         
   });
 }
-function sortTable(){
-  alert('hi');
-  const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
-    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+function sortTable(data){
+  
+  elements.timestamp.classList.toggle("desc");
+  elements.icon.classList.toggle("fa-sort-asc");
+  if(!elements.icon.classList.contains('fa-sort-asc')){
+    elements.icon.className = "fa fa-sort-desc";
+  }
 
-// do the work...
-document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-    const table = th.closest('table');
-    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-        .forEach(tr => table.appendChild(tr) );
-})));
-}
+  sortOrder = elements.timestamp.className;
+  data = data.sort((a,b)=>{
+    return sortOrder == "desc" ?  a.timestamp-b.timestamp : b.timestamp-a.timestamp;
+  });
+  
+  return data;
+  
+};
