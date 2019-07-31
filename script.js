@@ -2,7 +2,6 @@
 //    $('#table').DataTable();
 //} );
 let  sortOrder;
-let result;
 const elements = {
   table: document.querySelector('#TelemetryTable'),
   timestamp : document.getElementById('timestamp'), 
@@ -89,7 +88,6 @@ function render(pointId){
 //      console.log(data.sort((a,b)=>a.timestamp-b.timestamp));
 //    data = data.sort((a,b)=>b.timestamp-a.timestamp); 
       data = sortTable(data);
-      result = data;
 //    data = data.sort((a,b)=>a.timestamp-b.timestamp);
     
       const tableRow = data.map(telemetry=> {
