@@ -17,7 +17,7 @@ removed.
 
 ### How to run it:
   - Download the repo
-  - run "Open MCT" server (node.js server)
+  - Run "Open MCT" server (node.js server)
   
     > git clone https://github.com/nasa/openmct-tutorial.git
     
