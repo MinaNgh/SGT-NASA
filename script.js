@@ -6,47 +6,38 @@ const elements = {
   input :document.querySelector('input'),
   sub : document.querySelector('#sub'), 
   unSub : document.querySelector('#unSub'),
-  checkboxes : document.querySelectorAll('input[type=checkbox]')
-//  checkbox : document.querySelector('input[name=checkbox[]]')
- 
-
+  checkboxes : document.querySelectorAll('input[type=checkbox]'),
+  timestamps :document.querySelectorAll('#timestamp')
 }
 let  sortOrder;
 var wsUri = "ws://localhost:8080/realtime";
 let command = "subscribe";
 function init() {
-
   let message = `${command} pwr.v`;
-
   console.log(message);
-   testWebSocket(message);
+  testWebSocket(message);
 }
 
 function testWebSocket(message) {
-   websocket = new WebSocket(wsUri);
+  websocket = new WebSocket(wsUri);
+  websocket.onopen = function(evt) {
+    onOpen(evt,message)
+  };
 
-   websocket.onopen = function(evt) {
+  websocket.onmessage = function(evt) {
+    onMessage(evt,message)
+  };
 
-      onOpen(evt,message)
-   };
-
-   websocket.onmessage = function(evt) {
-      onMessage(evt,message)
-   };
-
-   websocket.onerror = function(evt) {
-      onError(evt)
-   };
+  websocket.onerror = function(evt) {
+    onError(evt)
+  };
   websocket.onclose = function(evt) {
     onClose(evt)
   };
 }
 
 function onOpen(evt,message) {
-
-    console.log("CONNECTED");
-
-//         doSend(message);
+  console.log("CONNECTED");
 
 }
 
@@ -63,30 +54,23 @@ function onMessage(evt,message) {
             ${msg.value}
         </td>
       </tr>`);
-
-//        websocket.close();
 }
 
 function onError(evt) {
-
   console.log(`ERROR: ${evt.data}`);
 }
 function onClose(){
-
 //        websocket.close();
 }
 
 function doSend(message) {
-
   console.log("SENT: " + message); 
   websocket.send(message);
-
 }
 
 function writeToScreen(message) {
 
-
-    elements.table.insertAdjacentHTML('afterbegin',message);
+  elements.table.insertAdjacentHTML('afterbegin',message);
 }
 		
 window.addEventListener("load", init, false);     
@@ -94,8 +78,8 @@ window.addEventListener("load", init, false);
 
 async function getTelemetry(pointId){
   
-    let start = Date.now()- 1000 * 60*15;
-    let end = Date.now();
+  let start = Date.now()- 1000 * 60*15;
+  let end = Date.now();
 
   try{
     const result = await fetch(`http://localhost:8080/history/${pointId}?start=${start}&end=${end}`,{
@@ -106,18 +90,16 @@ async function getTelemetry(pointId){
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
             'Accept': 'application/json',
-             'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer',
     })
     const data = await result.json();
 
-      return data;
-
-    }
+    return data;
+  }
          
-
   catch(error){
    alert(error); 
   }
@@ -125,44 +107,38 @@ async function getTelemetry(pointId){
 }
 
 
-
 function subscribe(input){
   console.log(input);
-    websocket.send(`subscribe ${input}`);
-    websocket.onmessage;
+  websocket.send(`subscribe ${input}`);
+  websocket.onmessage;
 //      console.log(websocket.onmessage);
 }
 function unSubscribe(input){
-    websocket.send(`unsubscribe ${input}`);
-    websocket.onmessage;
-    
-    deleteRow(input);
+  websocket.send(`unsubscribe ${input}`);
+  websocket.onmessage;
+  deleteRow(input);
     
 }
 function deleteRow(input){
   console.log(elements.table.rows.length);
-    for (let i = 0 ; i < elements.table.rows.length; i++) {
-          let row = elements.table.rows[i]
-          console.log(row.innerHTML.includes(input));
-          if(row.innerHTML.includes(input) ){
-            elements.table.deleteRow(i);
-            i--;
-          }
+  for (let i = 0 ; i < elements.table.rows.length; i++) {
+      let row = elements.table.rows[i]
+      console.log(row.innerHTML.includes(input));
+      if(row.innerHTML.includes(input) ){
+        elements.table.deleteRow(i);
+        i--;
+      }
   
-        };
+    };
 }
 
 function render(pointId){
-  elements.table.innerHTML = "";
-  
+  elements.table.innerHTML = ""; 
   checkboxArr = Array.prototype.slice.call(elements.checkboxes) ;
   checkboxArr.map((el,index)=>{
     if(el.checked){
-     pointId = el.value;
-
-  
+      pointId = el.value;
       getTelemetry(pointId).then(data =>{
-
           const tableRow = data.map(telemetry=> {
              const newRow = `<tr>
                   <td class="${telemetry.id}">
@@ -177,10 +153,7 @@ function render(pointId){
                 </tr>`;
 
               elements.table.insertAdjacentHTML('afterbegin',newRow);
-            }
-
-          );
-
+          });
       });
     }
   });
@@ -192,7 +165,7 @@ const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-document.querySelectorAll('#timestamp').forEach(th => th.addEventListener('click', (() => {
+elements.timestamps.forEach(th => th.addEventListener('click', (() => {
     Array.from(elements.mytable.querySelectorAll('tbody tr:nth-child(n+1)'))
         .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
         .forEach(tr => elements.table.appendChild(tr) );
