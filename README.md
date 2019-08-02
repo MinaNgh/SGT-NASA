@@ -16,7 +16,7 @@ telemetry points, and any telemetry data for a deselected telemetry point should
 removed.
 
 ### How to run it:
-  - Download the rep
+  - Download the repo
   - run "Open MCT" server (node.js server)
   
     > git clone https://github.com/nasa/openmct-tutorial.git
