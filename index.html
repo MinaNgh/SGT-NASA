@@ -11,13 +11,32 @@
 </head>
 <body>
   <div class="container">
-	<div class="flexItem" id="div1">
-	  <label for="male">Telemetry points</label>
-      <select name="telemetryPt" id="telemetryPt" onchange="render(this.value)">  
-        <option value="v">Voltage</option>
-        <option value="c">current</option>
-      </select>	  
-	</div>
+
+     <h2>WebSocket Test</h2>
+     <div class="flexItem" >
+      <form name="Sub-unSub" onsubmit = "subscribe(document.getElementById('input').value); return false;" class="form-inline">
+        <label>Subscribe</label>
+<!--        <input type="text" placeholder="eg. pwr.v" id="input" name="pointId" >-->
+        <label for="male">Telemetry points </label>
+        <select name="telemetryPt" id="input" class="form-control" >
+<!--           onchange="render(this.value)"-->
+            <option value="">Select...</option>   
+            <option value="pwr.v">Voltage(pwr.v)</option>
+            <option value="pwr.c">current(pwr.c)</option>
+        </select>
+        <input id="sub"  type="submit" value="Subscribe" class="btn btn-success" >
+        <input id="unSub"  type="button" value="Unsubscribe" onclick="unSubscribe(document.getElementById('input').value)"  class="btn btn-danger " >
+      </form>
+    </div>  <br>
+   
+   
+    <div class="checkbox">
+      <label><input type="checkbox" name="vol" value="pwr.v" name="checkbox"  onchange="render(this.value)"> pwr.v</label>
+    </div>
+    <div class="checkbox">
+      <label> <input type="checkbox" name="cur" value="pwr.c" name="checkbox"  onchange="render(this.value)"> pwr.c</label>
+    </div>
+    
     <div class="flexItem" id="div2">
       <table id="table" class="table table-striped table-bordered">
         <thead>
@@ -37,14 +56,7 @@
         </tbody>
 	   </table>
     </div>
-    <div>
-      <form name="Sub-unSub">
-        <label>Subscribe</label>
-        <input type="text" placeholder="eg. pwr.v" name="pointId" required>
-        <button onclick="subscribe(pointId.value)">Subscribe</button>
-        <button onclick="unSubscribe(pointId.value)">Unsubscribe</button>
-      </form>
-    </div> 
+    
   </div>
     
   

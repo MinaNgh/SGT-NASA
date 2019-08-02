@@ -1,20 +1,103 @@
-//$(document).ready(function() {
-//    $('#table').DataTable();
-//} );
-let  sortOrder;
 const elements = {
-  table: document.querySelector('#TelemetryTable'),
+  table: document.querySelector('#TelemetryTable'),  
+  mytable: document.querySelector('#table'),
   timestamp : document.getElementById('timestamp'), 
   icon : document.querySelector('.fa'),
+  input :document.querySelector('input'),
+  sub : document.querySelector('#sub'), 
+  unSub : document.querySelector('#unSub'),
+  checkboxes : document.querySelector('input[type=checkbox]')
+//  checkbox : document.querySelector('input[name=checkbox[]]')
 
 }
+let  sortOrder;
+var wsUri = "ws://localhost:8080/realtime";
+let command = "subscribe";
+function init() {
+
+  let message = `${command} pwr.v`;
+
+  console.log(message);
+   testWebSocket(message);
+}
+
+function testWebSocket(message) {
+   websocket = new WebSocket(wsUri);
+
+   websocket.onopen = function(evt) {
+
+      onOpen(evt,message)
+   };
+
+   websocket.onmessage = function(evt) {
+      onMessage(evt,message)
+   };
+
+   websocket.onerror = function(evt) {
+      onError(evt)
+   };
+  websocket.onclose = function(evt) {
+    onClose(evt)
+  };
+}
+
+function onOpen(evt,message) {
+
+    console.log("CONNECTED");
+
+//         doSend(message);
+
+}
+
+function onMessage(evt,message) {
+  let msg = JSON.parse(evt.data);
+  writeToScreen( `<tr>
+        <td class="${msg.id}">
+            ${msg.id}
+        </td>
+        <td>
+            ${ new Date(msg.timestamp).toUTCString() }
+        </td>
+        <td>
+            ${msg.value}
+        </td>
+      </tr>`);
+
+//        websocket.close();
+}
+
+function onError(evt) {
+
+  console.log(`ERROR: ${evt.data}`);
+}
+function onClose(){
+
+//        websocket.close();
+}
+
+function doSend(message) {
+
+  console.log("SENT: " + message); 
+  websocket.send(message);
+
+}
+
+function writeToScreen(message) {
+
+
+    elements.table.insertAdjacentHTML('afterbegin',message);
+}
+		
+window.addEventListener("load", init, false);     
+
+
 async function getTelemetry(pointId){
   
     let start = Date.now()- 1000 * 60*15;
     let end = Date.now();
 
   try{
-    const result = await fetch(`http://localhost:8080/history/pwr.${pointId}?start=${start}&end=${end}`,{
+    const result = await fetch(`http://localhost:8080/history/${pointId}?start=${start}&end=${end}`,{
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, cors, *same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -39,60 +122,52 @@ async function getTelemetry(pointId){
   }
   
 }
-function subscribe(pointId){
-    // Create WebSocket connection.
-    const socket = new WebSocket(`ws://localhost:8080/realtime`);
-    
-    var msg = {
-      type: "message",
-      subscribe: `${pointId}`,
-      
-    };
-    
-    // Connection opened
-    socket.addEventListener('open', function (event) {
-        socket.send(JSON.stringify(msg));
-    });
-    console.log(JSON.stringify(msg));
-    // Listen for messages
-    socket.addEventListener('message', function (event) {
-        console.log('Message from server ', event.data);
-    });
-  
-}
-function unSubscribe(pointId){
 
-    const socket = new WebSocket(`ws://localhost:8080/realtime`);
+
+
+function subscribe(input){
+  console.log(input);
+    websocket.send(`subscribe ${input}`);
+    websocket.onmessage;
+//      console.log(websocket.onmessage);
+}
+function unSubscribe(input){
+    websocket.send(`unsubscribe ${input}`);
+    websocket.onmessage;
     
-    var msg = {
-      type: "message",
-      unsubscribe: `pwr.${pointId}`,
-      
-    };
+    deleteRow(input);
     
-    // Connection opened
-    socket.addEventListener('open', function (event) {
-        socket.send(JSON.stringify(msg));
-    });
-    console.log(JSON.stringify(msg));
-    // Listen for messages
-    socket.addEventListener('message', function (event) {
-        console.log('Message from server ', event.data);
-    });
+}
+function deleteRow(input){
+  console.log(elements.table.rows.length);
+    for (let i = 0 ; i < elements.table.rows.length; i++) {
+          let row = elements.table.rows[i]
+          console.log(row.innerHTML.includes(input));
+          if(row.innerHTML.includes(input) ){
+            elements.table.deleteRow(i);
+            i--;
+          }
   
+        };
 }
 
 function render(pointId){
   elements.table.innerHTML = "";
+  
+//   console.log(document.getElementsByName('checkbox'));
+  // loop over them all
+  for (var i=0; i<document.getElementsByName('checkbox').length; i++) {
+     // And stick the checked ones onto an array...
+     if (document.getElementsByName('checkbox')[i].checked) {
+        console.log(elements.checkboxes[i].value)
+     }
+  }
+  
   getTelemetry(pointId).then(data =>{
-//      console.log(data.sort((a,b)=>a.timestamp-b.timestamp));
-//    data = data.sort((a,b)=>b.timestamp-a.timestamp); 
-      data = sortTable(data);
-//    data = data.sort((a,b)=>a.timestamp-b.timestamp);
     
       const tableRow = data.map(telemetry=> {
-         const newArray = `<tr>
-              <td>
+         const newRow = `<tr>
+              <td class="${telemetry.id}">
                   ${telemetry.id}
               </td>
               <td>
@@ -103,7 +178,7 @@ function render(pointId){
               </td>
             </tr>`;
          
-          elements.table.insertAdjacentHTML('beforeend',newArray);
+          elements.table.insertAdjacentHTML('afterbegin',newRow);
         }
         
       );
@@ -111,19 +186,19 @@ function render(pointId){
   });
 }
 
-function sortTable(data){
-  
-  elements.timestamp.classList.toggle("desc");
-  elements.icon.classList.toggle("fa-sort-asc");
-  if(!elements.icon.classList.contains('fa-sort-asc')){
-    elements.icon.className = "fa fa-sort-desc";
-  }
-
-  sortOrder = elements.timestamp.className;
-  data = data.sort((a,b)=>{
-    return sortOrder == "desc" ?  a.timestamp-b.timestamp : b.timestamp-a.timestamp;
-  });
-  
-  return data;
-  
-};
+//function sortTable(data){
+//  
+//  elements.timestamp.classList.toggle("desc");
+//  elements.icon.classList.toggle("fa-sort-asc");
+//  if(!elements.icon.classList.contains('fa-sort-asc')){
+//    elements.icon.className = "fa fa-sort-desc";
+//  }
+//
+//  sortOrder = elements.timestamp.className;
+//  data = data.sort((a,b)=>{
+//    return sortOrder == "desc" ?  a.timestamp-b.timestamp : b.timestamp-a.timestamp;
+//  });
+//  
+//  return data;
+//  
+//};
