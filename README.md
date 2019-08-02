@@ -19,12 +19,12 @@ removed.
   - Download the rep
   - run "Open MCT" server (node.js server)
   
-    git clone https://github.com/nasa/openmct-tutorial.git
+    > git clone https://github.com/nasa/openmct-tutorial.git
     
-    cd openmct-tutorial
+    > cd openmct-tutorial
     
-    npm install
+    > npm install
     
-    npm start
+    > npm start
     
-  - Open index.html in browser
+  - Open "index.html" from "SGT-NASA" folder in browser
