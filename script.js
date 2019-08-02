@@ -6,8 +6,9 @@ const elements = {
   input :document.querySelector('input'),
   sub : document.querySelector('#sub'), 
   unSub : document.querySelector('#unSub'),
-  checkboxes : document.querySelector('input[type=checkbox]')
+  checkboxes : document.querySelectorAll('input[type=checkbox]')
 //  checkbox : document.querySelector('input[name=checkbox[]]')
+ 
 
 }
 let  sortOrder;
@@ -154,35 +155,34 @@ function deleteRow(input){
 function render(pointId){
   elements.table.innerHTML = "";
   
-//   console.log(document.getElementsByName('checkbox'));
-  // loop over them all
-  for (var i=0; i<document.getElementsByName('checkbox').length; i++) {
-     // And stick the checked ones onto an array...
-     if (document.getElementsByName('checkbox')[i].checked) {
-        console.log(elements.checkboxes[i].value)
-     }
-  }
+  checkboxArr = Array.prototype.slice.call(elements.checkboxes) ;
+  checkboxArr.map((el,index)=>{
+    if(el.checked){
+     pointId = el.value;
+
   
-  getTelemetry(pointId).then(data =>{
-    
-      const tableRow = data.map(telemetry=> {
-         const newRow = `<tr>
-              <td class="${telemetry.id}">
-                  ${telemetry.id}
-              </td>
-              <td>
-                  ${ new Date(telemetry.timestamp).toUTCString() }
-              </td>
-              <td>
-                  ${telemetry.value}
-              </td>
-            </tr>`;
-         
-          elements.table.insertAdjacentHTML('afterbegin',newRow);
-        }
-        
-      );
-        
+      getTelemetry(pointId).then(data =>{
+
+          const tableRow = data.map(telemetry=> {
+             const newRow = `<tr>
+                  <td class="${telemetry.id}">
+                      ${telemetry.id}
+                  </td>
+                  <td>
+                      ${ new Date(telemetry.timestamp).toUTCString() }
+                  </td>
+                  <td>
+                      ${telemetry.value}
+                  </td>
+                </tr>`;
+
+              elements.table.insertAdjacentHTML('afterbegin',newRow);
+            }
+
+          );
+
+      });
+    }
   });
 }
 
@@ -202,3 +202,15 @@ function render(pointId){
 //  return data;
 //  
 //};
+//function sortTable(date){
+//  console.log(elements.table.rows.length);
+//  for (let i = 0 ; i < elements.table.rows.length; i++) {
+//      let row = elements.table.rows[i];
+//      console.log(row.innerHTML.includes(input));
+//      if(row.innerHTML.includes(input) ){
+//        elements.table.deleteRow(i);
+//        i--;
+//      }
+//
+//    };
+//}

@@ -31,10 +31,10 @@
    
    
     <div class="checkbox">
-      <label><input type="checkbox" name="vol" value="pwr.v" name="checkbox"  onchange="render(this.value)"> pwr.v</label>
+      <label><input type="checkbox" name="vol" value="pwr.v" name="checkbox1"  onclick="render(this.value)"> pwr.v</label>
     </div>
     <div class="checkbox">
-      <label> <input type="checkbox" name="cur" value="pwr.c" name="checkbox"  onchange="render(this.value)"> pwr.c</label>
+      <label> <input type="checkbox" name="cur" value="pwr.c" name="checkbox2"  onclick="render(this.value)"> pwr.c</label>
     </div>
     
     <div class="flexItem" id="div2">
@@ -44,7 +44,7 @@
                 <th>
                     ID
                 </th>
-                <th id="timestamp" onclick="render(document.getElementById('telemetryPt').value)" class="desc">
+                <th id="timestamp" onclick="" class="desc">
                     Timestamp <i class="fa fa-sort-desc"></i>
                 </th>
                 <th>
