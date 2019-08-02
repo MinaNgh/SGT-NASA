@@ -14,3 +14,5 @@ as new data becomes available, maintaining the selected sort order. When the use
 changes the selected telemetry point, you should only maintain subscriptions to selected
 telemetry points, and any telemetry data for a deselected telemetry point should be
 removed.
+
+###How to run it:
