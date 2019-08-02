@@ -185,4 +185,15 @@ function render(pointId){
     }
   });
 }
+//sort table asc or des
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+document.querySelectorAll('#timestamp').forEach(th => th.addEventListener('click', (() => {
+    Array.from(elements.mytable.querySelectorAll('tbody tr:nth-child(n+1)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        .forEach(tr => elements.table.appendChild(tr) );
+})));
