@@ -186,31 +186,3 @@ function render(pointId){
   });
 }
 
-//function sortTable(data){
-//  
-//  elements.timestamp.classList.toggle("desc");
-//  elements.icon.classList.toggle("fa-sort-asc");
-//  if(!elements.icon.classList.contains('fa-sort-asc')){
-//    elements.icon.className = "fa fa-sort-desc";
-//  }
-//
-//  sortOrder = elements.timestamp.className;
-//  data = data.sort((a,b)=>{
-//    return sortOrder == "desc" ?  a.timestamp-b.timestamp : b.timestamp-a.timestamp;
-//  });
-//  
-//  return data;
-//  
-//};
-//function sortTable(date){
-//  console.log(elements.table.rows.length);
-//  for (let i = 0 ; i < elements.table.rows.length; i++) {
-//      let row = elements.table.rows[i];
-//      console.log(row.innerHTML.includes(input));
-//      if(row.innerHTML.includes(input) ){
-//        elements.table.deleteRow(i);
-//        i--;
-//      }
-//
-//    };
-//}
