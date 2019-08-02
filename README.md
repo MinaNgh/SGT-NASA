@@ -18,8 +18,10 @@ removed.
 ### How to run it:
   - Download the rep
   - run "Open MCT" server (node.js server)
+  
     git clone https://github.com/nasa/openmct-tutorial.git
     cd openmct-tutorial
     npm install
     npm start
+    
   - Open index.html in browser
