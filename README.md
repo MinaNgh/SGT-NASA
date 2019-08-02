@@ -28,11 +28,11 @@ removed.
     > npm start
     
     > you will need to add the following to example-server/server.js
-           app.use(function(req, res, next) {
-           res.header("Access-Control-Allow-Origin","http://localhost:8081");
-           res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-           next();
-           });
+   app.use(function(req, res, next) {
+   res.header("Access-Control-Allow-Origin","http://localhost:8081");
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   next();
+   });
         
       > Where http://localhost:8081 should be replaced with the details of the http server
         hosting your web application.
